@@ -2,6 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python Version](https://img.shields.io/badge/python-3.6%2B-blue)](https://www.python.org/downloads/)
+[![CI](https://github.com/aousabdo/vid-to-gif/actions/workflows/ci.yml/badge.svg)](https://github.com/aousabdo/vid-to-gif/actions/workflows/ci.yml)
 
 A command-line tool to convert any video file into a high-quality GIF using ffmpeg.
 
