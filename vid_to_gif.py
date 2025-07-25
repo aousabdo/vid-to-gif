@@ -36,7 +36,16 @@ def get_video_duration(input_path):
         return None
 
 
-def convert_video_to_gif(input_path, output_path, fps=15, scale=480, verbose=False):
+def seconds_to_hms(seconds):
+    """Convert seconds to HH:MM:SS.mmm format."""
+    hours = int(seconds // 3600)
+    minutes = int((seconds % 3600) // 60)
+    secs = seconds % 60
+    return f"{hours:02d}:{minutes:02d}:{secs:06.3f}"
+
+
+def convert_video_to_gif(input_path, output_path, fps=15, scale=480, 
+                        start_time=None, duration=None, verbose=False):
     """
     Convert video to GIF using ffmpeg with high quality settings.
     
@@ -45,6 +54,8 @@ def convert_video_to_gif(input_path, output_path, fps=15, scale=480, verbose=Fal
         output_path (str): Path to output GIF file
         fps (int): Frames per second for the GIF (1-60)
         scale (int): Height to scale the GIF to (16-4096)
+        start_time (float): Start time in seconds (optional)
+        duration (float): Duration in seconds (optional)
         verbose (bool): Whether to print detailed output
     """
     if not os.path.exists(input_path):
@@ -55,19 +66,32 @@ def convert_video_to_gif(input_path, output_path, fps=15, scale=480, verbose=Fal
         raise ValueError("FPS must be between 1 and 60")
     
     if not 16 <= scale <= 4096:
-        raise ValueError("Scale must be between 16 and 4096 pixels")
+        raise ValueError("Scale must be between 16 and 4096")
+    
+    if start_time is not None and start_time < 0:
+        raise ValueError("Start time must be non-negative")
+    
+    if duration is not None and duration <= 0:
+        raise ValueError("Duration must be positive")
     
     # Create temporary palette file for better quality
     with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as palette_file:
         palette_path = palette_file.name
     
     try:
-        # Generate palette for better color quality
-        palette_cmd = [
-            'ffmpeg', '-i', input_path,
+        # Build ffmpeg command for palette generation
+        palette_cmd = ['ffmpeg', '-i', input_path]
+        
+        # Add start time and duration if specified
+        if start_time is not None:
+            palette_cmd.extend(['-ss', str(start_time)])
+        if duration is not None:
+            palette_cmd.extend(['-t', str(duration)])
+            
+        palette_cmd.extend([
             '-vf', f'fps={fps},scale={scale}:-1:flags=lanczos,palettegen',
             '-y', palette_path
-        ]
+        ])
         
         if verbose:
             print("Generating color palette...")
@@ -75,12 +99,19 @@ def convert_video_to_gif(input_path, output_path, fps=15, scale=480, verbose=Fal
         
         subprocess.run(palette_cmd, check=True, capture_output=not verbose)
         
-        # Convert to GIF using the palette
-        convert_cmd = [
-            'ffmpeg', '-i', input_path, '-i', palette_path,
+        # Build ffmpeg command for GIF conversion
+        convert_cmd = ['ffmpeg', '-i', input_path, '-i', palette_path]
+        
+        # Add start time and duration if specified
+        if start_time is not None:
+            convert_cmd.extend(['-ss', str(start_time)])
+        if duration is not None:
+            convert_cmd.extend(['-t', str(duration)])
+            
+        convert_cmd.extend([
             '-lavfi', f'fps={fps},scale={scale}:-1:flags=lanczos [x]; [x][1:v] paletteuse',
             '-y', output_path
-        ]
+        ])
         
         if verbose:
             print("Converting video to GIF...")
@@ -88,7 +119,10 @@ def convert_video_to_gif(input_path, output_path, fps=15, scale=480, verbose=Fal
         
         subprocess.run(convert_cmd, check=True, capture_output=not verbose)
         
-        print(f"Successfully converted {input_path} to {output_path}")
+        # Provide detailed information about the conversion
+        start_info = f" from {seconds_to_hms(start_time)}" if start_time is not None else ""
+        duration_info = f" for {duration}s" if duration is not None else ""
+        print(f"Successfully converted {input_path}{start_info}{duration_info} to {output_path}")
         
     finally:
         # Clean up temporary palette file
@@ -104,6 +138,7 @@ def main():
 examples:
   vid-to-gif input.mp4 output.gif
   vid-to-gif input.mov output.gif --fps 20 --scale 600
+  vid-to-gif input.mp4 output.gif --start 10 --duration 5
         """
     )
     
@@ -113,6 +148,10 @@ examples:
                        help='Frames per second for the GIF (default: 15, range: 1-60)')
     parser.add_argument('--scale', type=int, default=480,
                        help='Height to scale the GIF to (default: 480, range: 16-4096)')
+    parser.add_argument('--start', type=float, metavar='SECONDS',
+                       help='Start time in seconds (default: 0)')
+    parser.add_argument('--duration', type=float, metavar='SECONDS',
+                       help='Duration in seconds (default: entire video)')
     parser.add_argument('--verbose', '-v', action='store_true',
                        help='Print detailed output')
     
@@ -146,6 +185,8 @@ examples:
             args.output, 
             fps=args.fps, 
             scale=args.scale,
+            start_time=args.start,
+            duration=args.duration,
             verbose=args.verbose
         )
     except ValueError as e:
