@@ -11,6 +11,7 @@ A command-line tool to convert any video file into a high-quality GIF using ffmp
 - High-quality output using optimized color palette
 - Customizable FPS and output size
 - Create GIFs from specific segments of videos
+- Batch processing for multiple videos
 - Simple command-line interface
 - Cross-platform compatibility (Windows, macOS, Linux)
 - Verbose mode for detailed output
@@ -94,6 +95,21 @@ vid-to-gif input.mp4 output.gif --verbose
 
 # Combine multiple options
 vid-to-gif input.mp4 output.gif --start 30 --duration 10 --fps 24 --scale 480
+
+# Batch processing (multiple inputs, multiple outputs)
+vid-to-gif video1.mp4 video2.mp4 video3.mp4 output1.gif output2.gif output3.gif
+
+# Batch processing with shared options
+vid-to-gif video1.mp4 video2.mp4 video3.mp4 output1.gif output2.gif output3.gif --fps 20 --scale 480
+```
+
+### Auto-generated output names
+
+If you don't specify an output file for a single input, the tool will automatically generate one:
+
+```bash
+# This will create input.gif
+vid-to-gif input.mp4
 ```
 
 ## How it works

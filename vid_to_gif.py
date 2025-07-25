@@ -130,6 +130,36 @@ def convert_video_to_gif(input_path, output_path, fps=15, scale=480,
             os.remove(palette_path)
 
 
+def convert_videos_batch(input_paths, output_paths, fps=15, scale=480,
+                        start_time=None, duration=None, verbose=False):
+    """
+    Convert multiple videos to GIFs.
+    
+    Args:
+        input_paths (list): List of input video file paths
+        output_paths (list): List of output GIF file paths
+        fps (int): Frames per second for the GIFs (1-60)
+        scale (int): Height to scale the GIFs to (16-4096)
+        start_time (float): Start time in seconds (optional)
+        duration (float): Duration in seconds (optional)
+        verbose (bool): Whether to print detailed output
+    """
+    if len(input_paths) != len(output_paths):
+        raise ValueError("Number of input files must match number of output files")
+    
+    success_count = 0
+    for input_path, output_path in zip(input_paths, output_paths):
+        try:
+            convert_video_to_gif(
+                input_path, output_path, fps, scale, start_time, duration, verbose
+            )
+            success_count += 1
+        except Exception as e:
+            print(f"Failed to convert {input_path}: {e}", file=sys.stderr)
+    
+    print(f"Batch conversion completed: {success_count}/{len(input_paths)} successful")
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Convert any video file to a high-quality GIF",
@@ -139,11 +169,12 @@ examples:
   vid-to-gif input.mp4 output.gif
   vid-to-gif input.mov output.gif --fps 20 --scale 600
   vid-to-gif input.mp4 output.gif --start 10 --duration 5
+  vid-to-gif video1.mp4 video2.mp4 video3.mp4 output1.gif output2.gif output3.gif
         """
     )
     
-    parser.add_argument('input', help='Input video file path')
-    parser.add_argument('output', help='Output GIF file path')
+    parser.add_argument('inputs', nargs='+', help='Input video file path(s)')
+    parser.add_argument('outputs', nargs='*', help='Output GIF file path(s)')
     parser.add_argument('--fps', type=int, default=15, 
                        help='Frames per second for the GIF (default: 15, range: 1-60)')
     parser.add_argument('--scale', type=int, default=480,
@@ -166,37 +197,76 @@ examples:
         print("  - Windows: Download from https://ffmpeg.org/download.html", file=sys.stderr)
         sys.exit(1)
     
-    # Check if input file exists
-    if not os.path.exists(args.input):
-        print(f"Error: Input file not found: {args.input}", file=sys.stderr)
-        print("Please check the file path and ensure the file exists.", file=sys.stderr)
-        sys.exit(1)
-    
-    # Check if output directory exists
-    output_dir = os.path.dirname(args.output)
-    if output_dir and not os.path.exists(output_dir):
-        print(f"Error: Output directory does not exist: {output_dir}", file=sys.stderr)
-        print("Please create the directory or specify a valid path.", file=sys.stderr)
-        sys.exit(1)
-    
-    try:
-        convert_video_to_gif(
-            args.input, 
-            args.output, 
-            fps=args.fps, 
-            scale=args.scale,
-            start_time=args.start,
-            duration=args.duration,
-            verbose=args.verbose
-        )
-    except ValueError as e:
-        print(f"Error: {e}", file=sys.stderr)
-        print("Please check your parameters and try again.", file=sys.stderr)
-        sys.exit(1)
-    except Exception as e:
-        print(f"Error converting video to GIF: {e}", file=sys.stderr)
-        print("Please check the input file and ensure it's a valid video.", file=sys.stderr)
-        sys.exit(1)
+    # Handle batch mode vs single file mode
+    if len(args.inputs) > 1 and len(args.outputs) > 0:
+        # Batch mode: last arguments are output files
+        input_files = args.inputs[:-len(args.outputs)] if len(args.outputs) < len(args.inputs) else args.inputs
+        output_files = args.inputs[-len(args.outputs):] if len(args.outputs) < len(args.inputs) else args.outputs
+        
+        # Validate input files exist
+        for input_file in input_files:
+            if not os.path.exists(input_file):
+                print(f"Error: Input file not found: {input_file}", file=sys.stderr)
+                print("Please check the file path and ensure the file exists.", file=sys.stderr)
+                sys.exit(1)
+        
+        # Validate output directories exist
+        for output_file in output_files:
+            output_dir = os.path.dirname(output_file)
+            if output_dir and not os.path.exists(output_dir):
+                print(f"Error: Output directory does not exist: {output_dir}", file=sys.stderr)
+                print("Please create the directory or specify a valid path.", file=sys.stderr)
+                sys.exit(1)
+        
+        try:
+            convert_videos_batch(
+                input_files, output_files,
+                fps=args.fps, scale=args.scale,
+                start_time=args.start, duration=args.duration,
+                verbose=args.verbose
+            )
+        except ValueError as e:
+            print(f"Error: {e}", file=sys.stderr)
+            print("Please check your parameters and try again.", file=sys.stderr)
+            sys.exit(1)
+    else:
+        # Single file mode
+        input_file = args.inputs[0]
+        output_file = args.outputs[0] if args.outputs else None
+        
+        # If no output file specified, generate one based on input
+        if output_file is None:
+            name, _ = os.path.splitext(input_file)
+            output_file = f"{name}.gif"
+        
+        # Check if input file exists
+        if not os.path.exists(input_file):
+            print(f"Error: Input file not found: {input_file}", file=sys.stderr)
+            print("Please check the file path and ensure the file exists.", file=sys.stderr)
+            sys.exit(1)
+        
+        # Check if output directory exists
+        output_dir = os.path.dirname(output_file)
+        if output_dir and not os.path.exists(output_dir):
+            print(f"Error: Output directory does not exist: {output_dir}", file=sys.stderr)
+            print("Please create the directory or specify a valid path.", file=sys.stderr)
+            sys.exit(1)
+        
+        try:
+            convert_video_to_gif(
+                input_file, output_file,
+                fps=args.fps, scale=args.scale,
+                start_time=args.start, duration=args.duration,
+                verbose=args.verbose
+            )
+        except ValueError as e:
+            print(f"Error: {e}", file=sys.stderr)
+            print("Please check your parameters and try again.", file=sys.stderr)
+            sys.exit(1)
+        except Exception as e:
+            print(f"Error converting video to GIF: {e}", file=sys.stderr)
+            print("Please check the input file and ensure it's a valid video.", file=sys.stderr)
+            sys.exit(1)
 
 
 if __name__ == "__main__":
