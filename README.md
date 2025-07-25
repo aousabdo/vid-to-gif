@@ -12,6 +12,7 @@ A command-line tool to convert any video file into a high-quality GIF using ffmp
 - Customizable FPS and output size
 - Simple command-line interface
 - Cross-platform compatibility (Windows, macOS, Linux)
+- Verbose mode for detailed output
 
 ## Requirements
 
@@ -66,8 +67,9 @@ vid-to-gif input.mp4 output.gif
 
 ### Options
 
-- `--fps`: Frames per second for the GIF (default: 15)
-- `--scale`: Height to scale the GIF to (default: 480)
+- `--fps`: Frames per second for the GIF (default: 15, range: 1-60)
+- `--scale`: Height to scale the GIF to (default: 480, range: 16-4096)
+- `--verbose`, `-v`: Print detailed output
 
 ### Examples
 
@@ -80,6 +82,9 @@ vid-to-gif input.mp4 output.gif --fps 20 --scale 600
 
 # For smaller file size
 vid-to-gif input.mp4 output.gif --fps 10 --scale 320
+
+# With detailed output
+vid-to-gif input.mp4 output.gif --verbose
 ```
 
 ## How it works
