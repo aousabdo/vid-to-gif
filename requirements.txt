@@ -1,0 +1,2 @@
+# This tool only requires ffmpeg to be installed on the system
+# No Python package dependencies beyond the standard library
