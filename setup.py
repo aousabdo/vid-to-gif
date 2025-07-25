@@ -10,9 +10,9 @@ setup(
     description="A command-line tool to convert videos to high-quality GIFs",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    author="Your Name",
-    author_email="your.email@example.com",
-    url="https://github.com/yourusername/vid-to-gif",
+    author="aousabdo",
+    author_email="aousabdo@example.com",
+    url="https://github.com/aousabdo/vid-to-gif",
     py_modules=['vid_to_gif'],
     install_requires=[],
     entry_points={

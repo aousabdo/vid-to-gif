@@ -5,8 +5,6 @@
 
 A command-line tool to convert any video file into a high-quality GIF using ffmpeg.
 
-https://github.com/user-attachments/assets/placeholder.gif
-
 ## Features
 
 - Converts any video format supported by ffmpeg to GIF
