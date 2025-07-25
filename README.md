@@ -37,11 +37,6 @@ sudo apt install ffmpeg
 
 ## Installation
 
-### From PyPI (recommended)
-```bash
-pip install vid-to-gif
-```
-
 ### From source
 1. Clone or download this repository
 2. Navigate to the project directory
@@ -55,6 +50,12 @@ Or for development:
 
 ```bash
 pip install -e .
+```
+
+Alternatively, you can install directly from GitHub:
+
+```bash
+pip install git+https://github.com/aousabdo/vid-to-gif.git
 ```
 
 ## Usage
