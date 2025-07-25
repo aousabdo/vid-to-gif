@@ -41,6 +41,11 @@ sudo apt install ffmpeg
 
 ## Installation
 
+### From PyPI (recommended)
+```bash
+pip install vid-to-gif
+```
+
 ### From source
 1. Clone or download this repository
 2. Navigate to the project directory
@@ -120,6 +125,41 @@ To run the unit tests:
 ```bash
 python run_tests.py
 ```
+
+Or with pytest:
+
+```bash
+pip install -e .[test]
+pytest
+```
+
+## Publishing to PyPI
+
+To publish a new version to PyPI:
+
+1. Update the version in `pyproject.toml` and `setup.py`
+2. Commit and push the changes
+3. Create and push a new tag:
+   ```bash
+   git tag -a v1.0.1 -m "Version 1.0.1"
+   git push origin v1.0.1
+   ```
+4. Build the package:
+   ```bash
+   python -m build
+   ```
+5. Upload to TestPyPI for testing:
+   ```bash
+   twine upload --repository testpypi dist/*
+   ```
+6. Test the installation from TestPyPI:
+   ```bash
+   pip install --index-url https://test.pypi.org/simple/ vid-to-gif
+   ```
+7. If everything works, upload to PyPI:
+   ```bash
+   twine upload dist/*
+   ```
 
 ## How it works
 

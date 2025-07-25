@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=45", "wheel"]
+requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,14 +7,13 @@ name = "vid-to-gif"
 version = "1.0.0"
 description = "A command-line tool to convert videos to high-quality GIFs"
 readme = "README.md"
-license = {file = "LICENSE"}
+license = "MIT"
 authors = [
     {name = "aousabdo", email = "aousabdo@example.com"}
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Integrity :: Command-Line Utilities",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.6",
@@ -26,6 +25,7 @@ classifiers = [
 ]
 requires-python = ">=3.6"
 dependencies = []
+keywords = ["video", "gif", "converter", "ffmpeg"]
 
 [project.optional-dependencies]
 test = [
