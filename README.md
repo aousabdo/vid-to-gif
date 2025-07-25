@@ -112,6 +112,14 @@ If you don't specify an output file for a single input, the tool will automatica
 vid-to-gif input.mp4
 ```
 
+## Running Tests
+
+To run the unit tests:
+
+```bash
+python run_tests.py
+```
+
 ## How it works
 
 The tool uses ffmpeg with a two-pass process:

@@ -15,6 +15,12 @@ setup(
     url="https://github.com/aousabdo/vid-to-gif",
     py_modules=['vid_to_gif'],
     install_requires=[],
+    extras_require={
+        'test': [
+            'pytest>=6.0',
+            'pytest-cov>=2.10',
+        ],
+    },
     entry_points={
         'console_scripts': [
             'vid-to-gif=vid_to_gif:main',
