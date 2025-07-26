@@ -1,7 +1,7 @@
 # vid-to-gif
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python Version](https://img.shields.io/badge/python-3.6%2B-blue)](https://www.python.org/downloads/)
+[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/downloads/)
 [![CI](https://github.com/aousabdo/vid-to-gif/actions/workflows/ci.yml/badge.svg)](https://github.com/aousabdo/vid-to-gif/actions/workflows/ci.yml)
 
 A command-line tool to convert any video file into a high-quality GIF using ffmpeg.
@@ -19,7 +19,7 @@ A command-line tool to convert any video file into a high-quality GIF using ffmp
 
 ## Requirements
 
-- Python 3.6 or higher
+- Python 3.8 or higher
 - ffmpeg installed and available in PATH
 
 ### Installing ffmpeg
