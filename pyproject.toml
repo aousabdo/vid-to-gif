@@ -7,7 +7,7 @@ name = "vid-to-gif"
 version = "1.0.0"
 description = "A command-line tool to convert videos to high-quality GIFs"
 readme = "README.md"
-license = "MIT"
+license = {file = "LICENSE"}
 authors = [
     {name = "aousabdo", email = "aousabdo@example.com"}
 ]
@@ -16,14 +16,13 @@ classifiers = [
     "Integrity :: Command-Line Utilities",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
-requires-python = ">=3.6"
+requires-python = ">=3.8"
 dependencies = []
 keywords = ["video", "gif", "converter", "ffmpeg"]
 
